@@ -1,0 +1,233 @@
+ <!-- almost working but pas location need to be clear from map  -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhuvan Map - Source & Destination</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css">
+    <script src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // Initialize the map
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.TileWMS({
+                        url: 'https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms',
+                        params: {
+                            'LAYERS': 'lulc:BR_LULC50K_1112',
+                            'TILED': true,
+                            'FORMAT': 'image/png'
+                        },
+                        serverType: 'geoserver'
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([77.2090, 28.6139]), // Default center (New Delhi)
+                zoom: 0 // Initial zoom level
+            })
+        });
+
+        // Create a vector source to hold the markers
+        const vectorSource = new ol.source.Vector();
+
+        // Create a vector layer to display the markers
+        const vectorLayer = new ol.layer.Vector({
+            source: vectorSource
+        });
+        map.addLayer(vectorLayer);
+
+        // Style for the source marker
+        const sourceIconStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg' // Source marker icon
+            })
+        });
+
+        // Style for the destination marker
+        const destinationIconStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg' // Destination marker icon
+            })
+        });
+
+        // Function to add the source marker
+        function addSourceMarker(lon, lat) {
+            const sourceMarker = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            sourceMarker.setStyle(sourceIconStyle);
+            vectorSource.addFeature(sourceMarker);
+
+            // Center the map on the current location
+            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+            map.getView().setZoom(5); // Zoom in on the current location
+        }
+
+        // Function to add the destination marker
+        function addDestinationMarker(lon, lat) {
+            const destinationMarker = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            destinationMarker.setStyle(destinationIconStyle);
+            vectorSource.addFeature(destinationMarker);
+        }
+
+        // Get the current location of the device
+        if (navigator.geolocation) {
+            //navigator.geolocation.watchPosition()
+            navigator.geolocation.watchPosition(position => {
+                const lon = position.coords.longitude;
+                const lat = position.coords.latitude;
+                console.log('Current location:', lon, lat); // Debugging: Log the current location
+                addSourceMarker(lon, lat); // Add marker at the current location
+            }, error => {
+                console.error('Error getting location:', error);
+                // Fallback to default location if geolocation fails
+                // addSourceMarker(77.2090, 28.6139); // Default to New Delhi
+            }, {
+                enableHighAccuracy: true
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+            // Fallback to default location if geolocation is not supported
+            // addSourceMarker(77.2090, 28.6139); // Default to New Delhi
+        }
+
+        // Example: Adding the destination marker
+        addDestinationMarker(77.2090, 28.6139); // Example coordinates for destination (Patna)
+
+        // Debugging: Log the extent to see if features are being added correctly
+        map.getView().fit(vectorSource.getExtent(), { maxZoom: 0 });
+    </script>
+</body>
+</html> -->
+ <!-- ========================================================================================================= -->
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhuvan Map - Real-Time Tracking</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css">
+    <script src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // Initialize the map
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.TileWMS({
+                        url: 'https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms',
+                        params: {
+                            'LAYERS': 'lulc:BR_LULC50K_1112',
+                            'TILED': true,
+                            'FORMAT': 'image/png'
+                        },
+                        serverType: 'geoserver'
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([77.2090, 28.6139]), // Default center (New Delhi)
+                zoom: 5 // Initial zoom level
+            })
+        });
+
+        // Create a vector source to hold the markers
+        const vectorSource = new ol.source.Vector();
+
+        // Create a vector layer to display the markers
+        const vectorLayer = new ol.layer.Vector({
+            source: vectorSource
+        });
+        map.addLayer(vectorLayer);
+
+        // Style for the source marker
+        const sourceIconStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg' // Source marker icon
+            })
+        });
+
+        // Style for the destination marker
+        const destinationIconStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/BlueDot.svg' // Destination marker icon
+            })
+        });
+
+        // Function to add or update the source marker
+        let sourceMarker;
+        function updateSourceMarker(lon, lat) {
+            vectorSource.clear(); // Clear all previous markers before adding new ones
+
+            sourceMarker = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            sourceMarker.setStyle(sourceIconStyle);
+            vectorSource.addFeature(sourceMarker);
+
+            // Center the map on the current location
+            // map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+            // map.getView().setZoom(0); // Zoom in on the current location
+        }
+
+        // Function to add the destination marker
+        function addDestinationMarker(lon, lat) {
+            const destinationMarker = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            destinationMarker.setStyle(destinationIconStyle);
+            vectorSource.addFeature(destinationMarker);
+        }
+
+        // Track the real-time location of the device
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(position => {
+                const lon = position.coords.longitude;
+                const lat = position.coords.latitude;
+                console.log('Real-time location:', lon, lat); // Debugging: Log the real-time location
+                updateSourceMarker(lon, lat); // Update marker at the current location
+
+                // Add destination marker after updating source marker
+                addDestinationMarker(84.9782317, 25.6079451); // Example coordinates for destination (Patna)
+            }, error => {
+                console.error('Error getting real-time location:', error);
+            }, {
+                enableHighAccuracy: false,
+                maximumAge: 10000,
+                // timeout: Infinity
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhuvan Map Test</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css">
+    <script src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
+    <script>
+        function initMap() {
+            var map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.XYZ({
+                            url: 'https://bhuvan-app1.nrsc.gov.in/bhuvan2d/bhuvan/bhuvan2d.php'
+                        })
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([77.2090, 28.6139]), // Default to New Delhi
+                    zoom: 5
+                })
+            });
+
+            // Watch for device location
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    const coords = ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]);
+                    map.getView().setCenter(coords);
+                    map.getView().setZoom(14);
+                });
+            }
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <div id="map"></div>
+</body>
+</html> -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhuvan Map Test</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css">
+    <script src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
+    <script>
+        function initMap() {
+            var map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.TileWMS({
+                            url: 'https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms',
+                            params: {
+                                'LAYERS': 'lulc:BR_LULC50K_1112',
+                                'TILED': true,
+                                'FORMAT': 'image/png'
+                            },
+                            serverType: 'geoserver'
+                        })
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([77.2090, 28.6139]), // Default to New Delhi
+                    zoom: 5
+                })
+            });
+
+            // Watch for device location
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    const coords = ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]);
+                    map.getView().setCenter(coords);
+                    map.getView().setZoom(14);
+                });
+            }
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <div id="map"></div>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhuvan Map Test</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css">
+    <script src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
+   
+    <script>
+    function initMap() {
+        var map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.TileWMS({
+                        url: 'https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms',
+                        params: {
+                            'LAYERS': 'lulc:BR_LULC50K_1112',
+                            'TILED': true,
+                            'FORMAT': 'image/png'
+                        },
+                        serverType: 'geoserver'
+                    })
+                })
+            ],
+            view: new ol.View({
+                // center: ol.proj.fromLonLat([77.2090, 28.6139]), // Default to New Delhi
+                // zoom: 5
+            })
+        });
+
+        // Define a style for the marker
+        var iconStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://openlayers.org/en/v6.6.1/examples/data/icon.png'
+            })
+        });
+
+        // Create a vector layer for the marker
+        var vectorSource = new ol.source.Vector({});
+        var vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+            style: iconStyle
+        });
+        map.addLayer(vectorLayer);
+
+        // Function to add a marker at the current location
+        function addCurrentLocationMarker(lon, lat) {
+            var marker = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            vectorSource.addFeature(marker);
+            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+            map.getView().setZoom(14);
+        }
+
+        // Listen for messages from the React Native WebView
+        // window.addEventListener('message', function(event) {
+        //     const { latitude, longitude } = JSON.parse(event.data);
+        //     addCurrentLocationMarker(longitude, latitude);
+        // });
+
+        // Watch for device location
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(position => {
+                const lon = position.coords.longitude;
+                const lat = position.coords.latitude;
+                addCurrentLocationMarker(lon, lat);
+            }, error => {
+                console.error('Error getting location:', error);
+            }, {
+                enableHighAccuracy: true
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    }
+</script>
+
+</head>
+<body onload="initMap()">
+    <div id="map"></div>
+</body>
+</html> -->
+
+<!-- Current location is visible on the map  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhuvan Map Test</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+    <link rel="stylesheet" href="https://openlayers.org/en/v6.6.1/css/ol.css" type="text/css">
+    <script src="https://openlayers.org/en/v6.6.1/build/ol.js"></script>
+    <script>
+        let map;
+        let vectorSource;
+        let hasCentered = false;
+
+        function initMap() {
+            map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.TileWMS({
+                            url: 'https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms',
+                            params: {
+                                'LAYERS': 'lulc:BR_LULC50K_1112',
+                                'TILED': true,
+                                'FORMAT': 'image/png'
+                            },
+                            serverType: 'geoserver'
+                        })
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([77.2090, 28.6139]), // Default to Ghaziabad-NCR
+                    zoom: 0
+                })
+            });
+
+            // Define a style for the marker
+            var iconStyle = new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1],
+                    src: 'https://openlayers.org/en/v6.6.1/examples/data/icon.png'
+                    // src:'https://w7.pngwing.com/pngs/567/857/png-transparent-red-and-gray-lever-marker-pen-computer-icons-location-place-tag-s-angle-sphere-map-thumbnail.png'
+                })
+            });
+
+            // Create a vector layer for the marker
+            vectorSource = new ol.source.Vector({});
+            var vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: iconStyle
+            });
+            map.addLayer(vectorLayer);
+
+            // Watch for device location android or ios
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    const lon = position.coords.longitude;
+                    const lat = position.coords.latitude;
+                    addCurrentLocationMarker(lon, lat);
+                }, error => {
+                    console.error('Error getting location:', error);
+                }, {
+                    enableHighAccuracy: true
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        // Function to add a marker at the current location if location comes form skytrace api update the location as needed
+        function addCurrentLocationMarker(lon, lat) {
+            const marker = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            vectorSource.clear(); // Clear previous markers
+            vectorSource.addFeature(marker);
+            if (!hasCentered) {
+                map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+                map.getView().setZoom(0);
+                hasCentered = true;
+            }
+        }
+
+        // Listen for messages from WebView
+        window.addEventListener('message', function(event) {
+            const { latitude, longitude } = JSON.parse(event.data);
+            addCurrentLocationMarker(longitude, latitude);
+        });
+    </script>
+</head>
+<body onload="initMap()">
+    <div id="map"></div>
+</body>
+</html>
